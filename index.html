@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table Generator</title>
+    <style>
+        /* Custom styles */
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            margin-top: 50px;
+        }
+        input[type="text"] {
+            width: 100px;
+            padding: 5px;
+            margin-right: 10px;
+        }
+        input[type="number"] {
+            width: 100px;
+            padding: 5px;
+            margin-right: 10px;
+        }
+        button {
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        table {
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #000;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Enter Table Dimensions</h2>
+        <form id="tableForm">
+            <input type="text" id="table1Rows" placeholder="Rows">
+            <input type="text" id="table1Columns" placeholder="Columns">
+            <input type="number" id="table1value" placeholder="StartValue">
+            <br><br>
+            <input type="text" id="table2Rows" placeholder="Rows">
+            <input type="text" id="table2Columns" placeholder="Columns">
+            <input type="number" id="table2value" placeholder="StartValue">
+            <br><br>
+            <button type="button" onclick="generateTables()">Generate Tables</button>
+        </form>
+
+        <div id="tablesContainer"></div>
+    </div>
+
+    <script>
+        function generateTables() {
+    var table1Rows = parseInt(document.getElementById('table1Rows').value);
+    var table1Columns = parseInt(document.getElementById('table1Columns').value);
+    var table2Rows = parseInt(document.getElementById('table2Rows').value);
+    var table2Columns = parseInt(document.getElementById('table2Columns').value);
+    var table1start = parseInt(document.getElementById('table1value').value);
+    var table2start = parseInt(document.getElementById('table2value').value);
+    var tablesContainer = document.getElementById('tablesContainer');
+    tablesContainer.innerHTML = '';
+
+    var table1 = createTable(table1Rows, table1Columns, 'Table 1',table1start);
+    var table2 = createTable(table2Rows, table2Columns, 'Table 2',table2start);
+
+    tablesContainer.appendChild(table1);
+    tablesContainer.appendChild(table2);
+
+    if (table1Rows === table2Columns && table1Columns === table2Rows) {
+        var table3 = createTable(table1Rows, table1Columns, 'Table 3');
+        populateTable3(table3, table1, table2);
+        tablesContainer.appendChild(table3);
+    }
+}
+
+function createTable(rows, columns, tableName,start) {
+    var table = document.createElement('table');
+    var caption = table.createCaption();
+    caption.textContent = tableName;
+    var arr = [];
+    for(var i = 0; i < columns; i++){
+        arr.push(start);
+        start = start+1;
+    }
+    for (var i = 0; i < rows; i++) {
+        var row = table.insertRow();
+        for (var j = 0; j < columns; j++) {
+            var cell = row.insertCell();
+            cell.textContent = (arr[j]*(i+1));
+            // start++;
+        }
+    }
+
+    return table;
+}
+
+function populateTable3(table3, table1, table2) {
+    for (var i = 0; i < table3.rows.length; i++) {
+        for (var j = 0; j < table3.rows[i].cells.length; j++) {
+            var cellValue1 = table1.rows[i].cells[j].textContent;
+            var cellValue2 = table2.rows[i].cells[j].textContent;
+
+            if (cellValue1 === cellValue2) {
+                table3.rows[i].cells[j].textContent = cellValue1;
+            } else {
+                var num1 = parseInt(cellValue1);
+                var num2 = parseInt(cellValue2);
+                var product = num1 * num2;
+                table3.rows[i].cells[j].textContent = product;
+
+                // Set background color
+                var backgroundColor = getBackgroundColor(product);
+                table3.rows[i].cells[j].style.backgroundColor = backgroundColor;
+            }
+        }
+    }
+}
+
+function getBackgroundColor(number) {
+    var color = '#' + Math.floor(Math.random()*16777215).toString(16);
+    return color;
+}
+
+    </script>
+</body>
+</html>
